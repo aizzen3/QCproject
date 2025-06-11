@@ -1,0 +1,23 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/JuliaLang/devcontainer-templates/tree/main/src/julia
+{
+  "name": "Julia",
+  // Use the Dockerfile. More info: https://containers.dev/guide/dockerfile
+  "build": {
+    // Path is relative to the devcontainer.json file.
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "EditorConfig.EditorConfig",
+        "julialang.language-julia",
+        "tamasfe.even-better-toml",
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}
