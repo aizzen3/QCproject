@@ -1,19 +1,13 @@
-// For format details, see https://aka.ms/devcontainer.json.
-{
-    "name": "Python",
-    // Use the Dockerfile. More info: https://containers.dev/guide/dockerfile
-    "build": {
-        // Path is relative to the devcontainer.json file.
-        "dockerfile": "Dockerfile"
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "EditorConfig.EditorConfig",
-                "charliermarsh.ruff",
-                "tamasfe.even-better-toml",
-                "github.vscode-github-actions"
-            ]
-        }
-    }
-}
+
+# Base image
+FROM ghcr.io/astral-sh/uv:0.7.6-python3.13-bookworm-slim
+
+# Install git
+RUN apt-get update && \
+    apt-get install -y git
+
+# Clean up
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+    RUN pip install uv
