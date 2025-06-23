@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "qiskit-mps-initializer"
+name = "QCproject"
 version = "0.2.2"
 description = "Wavefunction initializers for Qiskit based on matrix product states (MPS)"
 readme = "README.md"

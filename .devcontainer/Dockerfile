@@ -1,4 +1,3 @@
-
 # Base image
 FROM ghcr.io/astral-sh/uv:0.7.6-python3.13-bookworm-slim
 
@@ -8,6 +7,4 @@ RUN apt-get update && \
 
 # Clean up
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-    RUN pip install uv
+    rm -rf /var/lib/apt/lists/*ocker
