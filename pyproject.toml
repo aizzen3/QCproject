@@ -6,6 +6,11 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "ipykernel>=6.29.5",
+    "matplotlib>=3.10.3",
+    "networkx>=3.5",
     "pydantic-numpy>=8.0.1",
+    "pylatexenc>=2.10",
+    "qiskit-aer>=0.17.1",
     "qiskit-mps-initializer>=0.2.2",
+    "qutip>=5.2.0",
 ]
