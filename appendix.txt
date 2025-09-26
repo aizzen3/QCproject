@@ -1,0 +1,98 @@
+\appendix
+\section*{Appendix: Derivation of Eqs.\ (B2)--(B12)}
+\addcontentsline{toc}{section}{Appendix: Derivation of Eqs.\ (B2)--(B12)}
+
+We consider a two-register Hilbert space \(\mathcal{H}_\text{prim}\otimes\mathcal{H}_\text{anc}\). Let \(\{ |x\rangle\}_x\) denote the computational basis of the primary register and \(P_x=|x\rangle\langle x|\) the corresponding projection. Define the operator \(U(\Delta)\) that applies an ancilla operator conditioned on the primary basis state,
+\begin{equation}
+U(\Delta)=\sum_x P_x \otimes \Big[ e^{i\Delta P_x} + \sum_{y\neq x} P_y \Big] .
+\tag{B2}
+\end{equation}
+Using the completeness relation \(\sum_y P_y = I\) the bracket becomes
+\[
+e^{i\Delta P_x} + \sum_{y\neq x} P_y
+= I + \big(e^{i\Delta P_x}-P_x\big).
+\]
+Because \(P_x\) is a projector (\(P_x^2=P_x\)) the exponential simplifies:
+\[
+e^{i\Delta P_x} = I + (e^{i\Delta}-1)P_x.
+\]
+Thus
+\[
+e^{i\Delta P_x} + \sum_{y\neq x} P_y = I + (e^{i\Delta}-1)P_x.
+\]
+Use the identity \(e^{i\Delta}-1 = 2i e^{i\Delta/2}\sin(\Delta/2)\) to write the per-\(x\) ancilla operator in a trigonometric form. Define
+\[
+U_x \equiv I + 2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\,P_x.
+\]
+Then
+\begin{equation}
+\boxed{ \; U(\Delta)=\sum_x P_x \otimes U_x \; } \tag{B5}
+\end{equation}
+Equivalently, collecting the identity term,
+\begin{equation}
+U(\Delta) = I\otimes I + 2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\sum_x P_x\otimes P_x .
+\tag{B4}
+\end{equation}
+Hence \(U(\Delta)\to I\otimes I\) when \(\Delta\to 0\).
+
+\medskip
+
+Let \(U_\varphi\) be an ancilla initializer such that \(U_\varphi|\mu\rangle=|\varphi_\mu\rangle\); in particular \(|\varphi_0\rangle\equiv|\varphi\rangle\). The joint state after applying the circuit \(I\otimes U_\varphi^\dagger\; U(\Delta)\; I\otimes U_\varphi\) to \(|\psi\rangle\otimes|0\rangle\) is
+\begin{align}
+|\Gamma\rangle
+&= \big(I\otimes U_\varphi^\dagger\big)U(\Delta)\big(I\otimes U_\varphi\big)\,|\psi\rangle|0\rangle
+\nonumber\\
+&= \sum_x P_x \otimes \big(U_\varphi^\dagger U_x U_\varphi\big)\;|\psi\rangle|0\rangle .
+\tag{B6}
+\end{align}
+Measuring the ancilla in the computational basis with outcome \(\mu\) yields (unnormalized)
+\[
+|\psi'_\mu\rangle \propto \big(I\otimes\langle\mu|\big)|\Gamma\rangle
+= \sum_x \psi(x)\,\langle\mu|U_\varphi^\dagger U_x U_\varphi|0\rangle\,|x\rangle ,
+\tag{B8}
+\]
+where \(\psi(x)=\langle x|\psi\rangle\). Using \(|\varphi_\mu\rangle=U_\varphi|\mu\rangle\) and \(|\varphi_0\rangle=|\varphi\rangle\),
+\[
+\langle\mu|U_\varphi^\dagger U_x U_\varphi|0\rangle = \langle\varphi_\mu|U_x|\varphi_0\rangle.
+\]
+With \(U_x = I + 2i e^{i\Delta/2}\sin(\tfrac{\Delta}{2})P_x\) one obtains
+\[
+\langle\varphi_\mu|U_x|\varphi_0\rangle
+= \langle\varphi_\mu|\varphi_0\rangle
++ 2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\langle\varphi_\mu|P_x|\varphi_0\rangle.
+\tag{B9}
+\]
+Writing \(\varphi_\mu(x)=\langle x|\varphi_\mu\rangle\) gives \(\langle\varphi_\mu|P_x|\varphi_0\rangle=\varphi_\mu^*(x)\varphi_0(x)\), so
+\[
+\langle\varphi_\mu|U_x|\varphi_0\rangle
+= \langle\varphi_\mu|\varphi_0\rangle
++ 2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\varphi_\mu^*(x)\varphi_0(x).
+\]
+For the ``good'' measurement outcome \(\mu=0\) (so \(|\varphi_0\rangle=|\varphi\rangle\)), \(\langle\varphi_0|\varphi_0\rangle=1\) and
+\[
+\psi'_0(x)\propto \psi(x)\Big[1+2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\,|\varphi(x)|^2\Big].
+\tag{B10}
+\]
+The probability of obtaining \(\mu=0\) is
+\[
+P(0)=\sum_x |\psi(x)|^2\Big|1+2i\,e^{i\Delta/2}\sin\!\Big(\tfrac{\Delta}{2}\Big)\,|\varphi(x)|^2\Big|^2,
+\]
+which simplifies to
+\begin{equation}
+P(0)=\sum_x |\psi(x)|^2\Big(1-4\sin^2\!\tfrac{\Delta}{2}\,|\varphi(x)|^2\big(1-|\varphi(x)|^2\big)\Big).
+\tag{B11}
+\end{equation}
+Using \( |\varphi(x)|^2(1-|\varphi(x)|^2)\le\tfrac14\) we obtain the lower bound
+\[
+\boxed{ \; P(0)\ge 1-\sin^2\!\Big(\tfrac{\Delta}{2}\Big) \; } \tag{B12}
+\]
+so for small \(\Delta\) the success probability is close to unity.
+
+\bigskip
+\textbf{Remarks.}
+\begin{itemize}
+  \item For \(\Delta\ll1\), \(2i e^{i\Delta/2}\sin(\Delta/2)\approx i\Delta\), so the per-cycle factor in (B10) approximates \(e^{i\Delta|\varphi(x)|^2}\). Repeating \(m\) cycles with \(\Delta=\alpha/m\) approximates \(e^{i\alpha|\varphi(x)|^2}\).
+  \item If \(\Delta\) is not small the \(\sin(\Delta/2)\) prefactor introduces nonlinear dependence on \(\Delta\) (oscillations), explaining non-monotonic fidelity vs.\ \(m\) when \(\alpha\) is fixed and \(\Delta=\alpha/m\) exits the small-\(\Delta\) regime.
+  \item Measurement outcomes \(\mu\neq0\) are low-probability branches that lead to corrupted transformations proportional to \(\varphi_\mu^*(x)\varphi(x)\) (see B9); they are the origin of rare but damaging error events.
+  \item In your circuit: \(U_\varphi\) is the MPS initializer on the ancilla, the controlled-phase/multi-controlled-phase implements the \(U(\Delta)\)-style coupling, then \(U_\varphi^\dagger\) and ancilla measurement implement the projection onto \(|\mu\rangle\).
+\end{itemize}
