@@ -5,6 +5,7 @@
 \usepackage{braket}   % For \ket, \bra, \braket commands
 \usepackage{amsmath}
 \usepackage{tikz}
+\usepackage{enumitem}
 \usetikzlibrary{positioning, shapes.geometric, arrows.meta} % Fixed libraries
 
 % Load hyperref only once, with all desired options
@@ -234,8 +235,70 @@ m = \frac{\alpha}{\Delta} = O\left(\frac{\alpha^2}{\epsilon}\right).
 \end{equation}
 
 \clearpage
+%Implementations and results-------------------------------------------------------
+
+
 \newpage
-\section{Implementation and Results}
+\section{Implementation}
+\subsection{Registers}
+
+\subsubsection{Primary and Ancillary Registers}
+
+The protocol makes use of two $n$-qubit registers: the primary (data) register and the ancillary (software) register. The primary register encodes the state of interest,
+\begin{equation}
+|\psi\rangle = \sum_{x=0}^{2^n-1} \psi(x)\,|x\rangle ,
+\end{equation}
+where $|x\rangle$ denotes computational basis states and $\psi(x)$ are the corresponding amplitudes. This register is the target of the programmable phase transformation.
+
+The ancillary register plays the role of a quantum program. It is prepared in the state
+\begin{equation}
+|\varphi\rangle = \sum_{x=0}^{2^n-1} \varphi(x)\,|x\rangle ,
+\end{equation}
+with amplitudes $\varphi(x)$ chosen such that the squared modulus $|\varphi(x)|^2$ determines the phase factor applied to the data register. After applying the oracle $U(\Delta)$ and performing post-selection, the data amplitudes transform approximately as
+\begin{equation}
+\psi(x) \;\mapsto\; \psi(x)\, e^{i\alpha|\varphi(x)|^2}.
+\end{equation}
+Thus, the ancillary register acts as a programmable resource: its amplitude distribution encodes the phase profile that will be imprinted on the data state. Here the number of qubits $n$ in each register sets the size of these functions: an $n$-qubit ancilla can represent $2^n$ sampled values of $|\varphi(x)|^2$.
+
+\subsubsection{Different Choices of the Ancilla State}
+
+The form of the ancillary state $|\varphi\rangle$ determines the type of transformation realized on the data register. A few choices of ancilla shown here are : 
+\begin{enumerate}[label=\alph*)]
+    \item If $|\varphi(x)|^2$ is uniform, the same phase is applied to all basis states, producing only a global phase factor.
+    \item If we take linearly increasing distribution of $|\varphi(x)|^2$, it generates a linear phase ramp, equivalent to a momentum shift in Fourier space.
+    \item A Gaussian-like distribution (potential well) concentrates weight around certain indices $x$, leading to phases resembling a potential well.
+    \item Exponential profiles of ancilla induce exponentially increasing or decreasing phases
+    \item A periodic choices such as $|\varphi(x)|^2 \propto \sin^2(kx)$ produce periodic modulation.
+    \item Randomly chosen amplitudes give rise to random phase factors, allowing simulation of disordered quantum systems.
+ \end{enumerate}
+ 
+\subsection{Protocol}
+
+After preparing the primary register $\ket{\psi}$ and the ancillary register $\ket{\phi}$ using MPS initialization circuits, the programmable phase transformation is carried out iteratively. Each iteration consists of four experimental steps. 
+\begin{enumerate}[label=\roman*)]
+    \item Qubits of the two registers are compared with CNOT gates so that matching basis states can be flagged. 
+    \item A small multi-controlled phase rotation $R_{z}(\Delta)$ is applied conditioned on all flags, thereby introducing a programmable phase kick. 
+    \item The flags are uncomputed to restore the registers to their original basis. 
+    \item The ancillary register is disentangled using $U_{\phi}^{\dagger}$, measured in the computational basis, and reset to $\ket{0}$. Only the measurement outcome corresponding to $\mu = 0$ is kept, ensuring that the ancilla returns to its original form and the protocol has succeeded.
+\end{enumerate}
+
+Repetition of this cycle $m$ times shows that the effective operation applied to the data register is a phase transformation of the form
+\[
+\psi(x) \;\mapsto\; \psi(x) \, e^{i m \Delta \, |\phi(x)|^{2}}.
+\]
+
+
+The process begins with the first loop, where controlled-NOT gates are applied with the $\phi$ register as the control and the $\psi$ register as the target. Unlike the usual CNOT, these gates are controlled on $\phi$ being $\ket{0}$ instead of $\ket{1}$. This effectively flips bits in $\psi$ in a way that encodes the comparison between $\psi$ and $\phi$. After this alignment, the multi-controlled phase gate is applied. This gate uses all but the last qubit of $\psi$ as controls and applies a small phase rotation on the final qubit if they are all in the $\ket{1}$ state. Because of the prior bit matching with $\phi$, this condition corresponds to $\psi$ and $\phi$ being in the same basis state, so the phase is applied selectively based on their match.
+
+Once the phase is applied, the second loop undoes the bit-matching process by repeating the same CNOTs in reverse. This step disentangles $\psi$ and $\phi$, restoring them to their original form so that the $\phi$ register can later be uncomputed and measured without leaving behind unwanted correlations. 
+
+Altogether, this sequence is a reversible \emph{compute–apply–uncompute} routine. It temporarily correlates $\psi$ and $\phi$, uses that correlation to control the application of the phase, and then removes the correlation to keep the registers clean.
+
+
+\clearpage
+\section{Results}
+
+
 
 
 \clearpage
