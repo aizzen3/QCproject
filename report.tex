@@ -297,7 +297,58 @@ Altogether, this sequence is a reversible \emph{compute–apply–uncompute} rou
 
 \clearpage
 \section{Results}
+We will run, verify and measure the prtocal in  three sections.
+\subsection{Successful runs}
+In this quantum protocol success we defne a successful run when after each round (iteration) of the quantum circuit, the ancilla register $\phi$ is measured, if the ancilla is found in the all-zero computational state:
+\[
+|\phi\rangle = |000\ldots 0\rangle.
+\]
+In this part of the work, we analyze the success probability of the ancilla-based phase transformation protocol and its dependence on two parameters: the programmable phase increment $\Delta$ and the number of iterations $m$.
 
+To obtain the success probability experimentally in the simulation, the protocol circuit was executed multiple times using the Qiskit simulator. In each execution, the ancilla register ($\phi$) was measured at the end of every iteration. The measurement outcomes from all ancilla qubits were stored in separate classical registers, one for each iteration. Hence, if the total number of iterations was $m$, there were $m$ classical registers in the circuit. Each run (or ``shot'') of the circuit produces a string of measurement results such as ``000 001 000'', where each block corresponds to the measured ancilla state at a specific iteration. These outcomes are probabilistic, as the ancilla measurement depends on the quantum interference and entanglement between the system and ancilla states.
+A successful shot is defined as the case where all ancilla registers collapse to the all-zero state $|000\rangle$ in every iteration. Any other outcome (for instance, a single ``1'' appearing in any ancilla register) corresponds to a failure. In the simulation, all successful shots were counted and divided by the total number of shots to compute the empirical success probability:
+\[
+P_{\text{success}} = \frac{N_{\text{success}}}{N_{\text{shots}}},
+\]
+where $N_{\text{success}}$ is the number of shots where all measured ancilla states were $|000\ldots 0\rangle$, and $N_{\text{shots}}$ is the total number of circuit executions. The success probability is therefore a binary evaluation (0 or 1 per shot) that is averaged over many independent runs to obtain a smooth statistical value.
+ Here we will analyze how this probability changes as functions of two key parameters.
+
+ \begin{enumerate}
+  \item \textbf{Phase step $\Delta$:} The phase increment applied in each iteration controls the strength of the phase rotation between the system and the ancilla registers. For the first parameter, $\Delta$, we performed the simulation by fixing the number of iterations $m$ and sweeping different values of $\Delta$. For each chosen phase increment, the success probability was measured from many repeated runs. According to the theoretical model derived in Appendix~B of the reference work, the success probability for a single iteration is given by
+  \[
+  P(\Delta) = 1 - a \sin^{2}\!\left(\frac{\Delta}{2}\right),
+  \]
+  where the proportionality constant $a$ depends on the overlap between the amplitudes of the system and ancilla states. The presence of the $\sin^{2}(\Delta/2)$ term means that the theoretical behavior of $P(\Delta)$ should resemble a cosine-like curve, oscillating between 1 and a minimum value as $\Delta$ increases. This is also consistent with the small-$\Delta$ approximation,
+  \[
+  P(\Delta) \approx 1 - \frac{a}{4}\Delta^{2},
+  \]
+  implying that the success probability decreases quadratically for small phase increments and recovers periodically for larger $\Delta$ values.
+
+  \item \textbf{Number of iterations $m$:} The total number of times the round subcircuit (interaction, measurement, and re-preparation of the ancilla) is repeated. In the second analysis, we fixed $\Delta$ and studied the effect of increasing the number of iterations $m$. Since each iteration is an independent probabilistic event that must succeed for the overall run to be considered successful, the total success probability after $m$ iterations becomes
+  \[
+  P_{\text{total}}(m, \Delta) = [P(\Delta)]^{m}.
+  \]
+  This means that the total success probability decreases exponentially as the number of iterations increases. On a linear scale, this appears as a monotonic decay, while on a logarithmic scale, it appears as a straight line. The physical reason for this reduction is that every iteration requires the ancilla to collapse again to the all-zero state; hence, even if each individual step has a high chance of success, multiplying that probability over multiple rounds reduces the overall success rate. In practice, this corresponds to an increased likelihood of observing ``failure'' strings (those containing at least one non-zero ancilla measurement) as $m$ becomes large.
+\end{enumerate}
+
+\subsection{error bars}
+
+Since the success probability is probabilistic and changes each time I run the circuit, the best way to visualize the reliability of the results is by adding error bars. Each circuit run gives slightly different success probabilities because quantum measurements are random and limited by the finite number of shots. To quantify this variability, I repeat the same circuit configuration many times (for example, 100 repetitions) and collect all the success probabilities obtained from those runs.
+
+I then calculate two quantities: the mean success probability, which represents the central trend, and the standard deviation, which measures how much the results fluctuate around that mean. Mathematically, if the success probabilities from each run are denoted as $p_{1}, p_{2}, p_{3}, \ldots, p_{N}$, then
+\[
+\bar{p} = \frac{1}{N} \sum_{i=1}^{N} p_{i}
+\]
+is the mean success probability, and
+\[
+\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (p_{i} - \bar{p})^{2}}
+\]
+is the standard deviation (the width of the error bar).
+
+
+\subsection{Fideality check}
+This section explore the possibile fideality we could reach for this protocol. I measured the fidelity of the post-selected output state of the system register $\psi$. Operationally, I prepared $|\psi\rangle \otimes |\phi\rangle$ with $|\phi\rangle$ having linear amplitudes in the computational basis (so that $|\phi(x)|^{2} \propto x^{2}$), executed the circuit for a chosen number of iterations $m$, and performed single-shot runs. Each shot produced $m$ ancilla readouts (one per round).
+If and only if all $m$ ancilla measurements were $|000\rangle$, I declared the shot successful; otherwise, I discarded it and repeated with a new one-shot run until a success occurred (or a maximum trial budget was reached). For a successful $m$, I then computed the fidelity against the ideal target by reconstructing the post-selected branch deterministically by rerunning the unitary without measurements and tracing out the ancilla after the round uncompute.
 
 
 
